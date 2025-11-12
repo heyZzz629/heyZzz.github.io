@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript Explorer</title>
+    <style>
+        body {
+            font-family: monospace, 'Courier New'， Courier;
+        }
+        h2 {
+            font-family: sans-serif, Arial, Helvetica, sans-serif;
+        }
+        。output {
+            margin-top: 20px;
+        }
+        。checkmark {
+            color: green;
+        }
+        。warning {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h2>Dr. X’s JavaScript Explorer</h2>
+    <textarea id="codeInput" rows="10" cols="60" placeholder="输入代码 (每行一个)..."></textarea>
+    <br>
+    <button onclick="evaluateCode()">运行 Run</button>
+
+    <div id="output" class="output"></div>
+
+    <script type="text/javascript">
+        function evaluateCode() {
+            var codeInput = document.getElementById('codeInput').value;
+            var outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = ''; // Clear 上一处 output
+
+            var lines = codeInput.split('\n');
+            for (var i = 0; i < lines.length; i++) {
+                var line = lines[i];
+                var result;
+                var isSpecialCharsOnly = /^[\+\[\]\!\(\)]+$/。test(line);
+                var specialCharCheck = isSpecialCharsOnly ? '<span class="checkmark">Yes &#10004;</span>' : '<span class="warning">No &#9888;</span>';
+
+                try {
+                    result = eval(line);
+                } catch (e) {
+                    result = 'Error: ' + e.message;
+                }
+
+                var isInteger = Number.isInteger ? Number.isInteger(result) : typeof result === 'number' && isFinite(result) && Math.floor(result) === result;
+                var isNonNegativeInteger = isInteger && result >= 0;
+                var integerCheck = isNonNegativeInteger ? '<span class="checkmark">Yes &#10004;</span>' : '<span class="warning">No &#9888;</span>';
+
+                if (typeof result === 'string') {
+                    result = '"' + result + '"';
+                }
+
+                outputDiv.innerHTML += '<div>#' + (i + 1) + ': ' + line + '<br>运行结果：' + result + '<br>字符检查：' + specialCharCheck + '<br>整数检查：' + integerCheck + '</div><br>';
+            }
+        }
+    </script>
+</body>
+</html>
